@@ -3,8 +3,7 @@
 ![Image Processed](Screenshots/Image%20processed.PNG)
 
 
-![Watch Demo Video](https://youtu.be/6lL665L0qmw?si=5a4JS-HP5zW_fTbQ)
-
+Watch the video walkthrough by clicking on the first diagram at the top
 
 # Image-Analysis-App
 A serverless web application to analyze images using AWS Rekognition.
