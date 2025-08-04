@@ -1,4 +1,4 @@
-![Architecture Diagram](Architecture%20Diagram.png)
+[![App Walkthrough](https://img.youtube.com/vi/5a4JS-HP5zW_fTbQ)](https://youtu.be/6lL665L0qmw?si=5a4JS-HP5zW_fTbQ)
 ![App Homepage](Screenshots/Homepage.PNG)
 ![Image Processed](Screenshots/Image%20processed.PNG)
 
