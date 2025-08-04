@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Image Analyzer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Smart Image Analyzer</h1>
+    <p class="subtitle">Upload a photo and get intelligent insights in seconds</p>
+
+    <form id="uploadForm">
+      <input type="file" id="fileInput" accept="image/*" required />
+      <button type="submit" id="uploadBtn">Upload & Analyze</button>
+    </form>
+
+    <div id="preview" class="preview"></div>
+    <div id="result" class="result-box"></div>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById("fileInput");
+    const previewDiv = document.getElementById("preview");
+    const resultDiv = document.getElementById("result");
+    const uploadForm = document.getElementById("uploadForm");
+
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files[0];
+      if (file) {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        img.alt = "Preview";
+        img.className = "preview-img";
+        previewDiv.innerHTML = "";
+        previewDiv.appendChild(img);
+      }
+    });
+
+    uploadForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const file = fileInput.files[0];
+      if (!file) return alert("Please select a file!");
+
+      resultDiv.innerHTML = "Uploading image and starting analysis... 🔄";
+
+      // Get presigned URL
+      const res = await fetch("<My API URL>", { method: "GET" });
+      const { uploadURL, filename } = await res.json();
+
+      // Upload image
+      await fetch(uploadURL, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+
+      resultDiv.innerHTML = `✅ Image uploaded successfully!<br>⏳ Processing...`;
+
+      localStorage.setItem("uploaded_filename", filename);
+      startPolling(filename);
+    });
+
+    function startPolling(filename) {
+      const resultURL = `<My S3 Public Web Hosting URL>/${filename.replace(/\.[^/.]+$/, '')}_result.json`;
+
+      const checkResult = async () => {
+        try {
+          const res = await fetch(resultURL);
+          if (res.ok) {
+            const data = await res.json();
+            const labels = data.Detected_Labels || [];
+
+            resultDiv.innerHTML = `
+              ✅ Image processed successfully!<br>
+              🔍 Detected Labels (≥ 90% confidence):<br>
+              <ul>
+                ${labels.map(label => `<li>${label}</li>`).join("")}
+              </ul>
+            `;
+            clearInterval(intervalId);
+          }
+        } catch (err) {
+          // still processing
+        }
+      };
+
+      const intervalId = setInterval(checkResult, 2000);
+    }
+
+    // Resume polling if file was uploaded earlier
+    const savedFilename = localStorage.getItem("uploaded_filename");
+    if (savedFilename) {
+      startPolling(savedFilename);
+    }
+  </script>
+</body>
+</html>
