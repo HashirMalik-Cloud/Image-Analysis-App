@@ -1,6 +1,6 @@
 ![Architecture Diagram](Architecture%20Diagram.png)
 ![App Homepage](Screenshots/Homepage.PNG)
-![Image Processed](Image%20processed.PNG)
+![Image Processed](Screenshots/Image%20processed.PNG)
 
 
 ![Watch Demo Video](https://youtu.be/6lL665L0qmw?si=5a4JS-HP5zW_fTbQ)
